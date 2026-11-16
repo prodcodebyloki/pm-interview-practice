@@ -1,0 +1,8 @@
+# All personal session data stays local (never pushed)
+sessions/*
+!sessions/_session-template.md
+progress-log.md
+weak-spots.md
+my-context/*.md
+
+.DS_Store

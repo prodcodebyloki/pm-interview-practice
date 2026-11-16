@@ -1,0 +1,230 @@
+<!doctype html>
+<!--
+  SESSION REPORT TEMPLATE
+  Claude: copy this file and change ONLY the DATA object inside the <script> block below.
+  It must be valid JavaScript/JSON: escape any double quotes inside strings as \".
+  Everything else (layout, charts) renders automatically from DATA.
+  The values below are SAMPLE data, so you can open this file in a browser to preview.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Report</title>
+<style>
+  :root {
+    --bg: #f6f5f2; --card: #ffffff; --ink: #1d1d1b; --muted: #6b6a66; --line: #e4e2dc;
+    --good: #2f7d5b; --mid: #b07a12; --bad: #b4443a; --accent: #3a5ba0; --track: #eeece6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161615; --card: #201f1d; --ink: #edebe6; --muted: #a09d96; --line: #34322e;
+      --good: #5fb98f; --mid: #d9a441; --bad: #e07a6f; --accent: #8aa8e6; --track: #2c2b28;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 28px 18px 48px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 14px; }
+  .meta { color: var(--muted); font-size: 13px; }
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px; margin-top: 16px; }
+  .hero { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between; }
+  .score { font-size: 56px; font-weight: 700; line-height: 1; }
+  .score small { font-size: 20px; color: var(--muted); font-weight: 500; }
+  .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; color: #fff; }
+  .chips span { display: inline-block; margin: 4px 6px 0 0; padding: 2px 9px; border: 1px solid var(--line);
+                border-radius: 999px; font-size: 12px; color: var(--muted); }
+  .row { display: grid; grid-template-columns: 190px 1fr 34px; gap: 10px; align-items: center; margin: 9px 0; }
+  .row .lbl { font-size: 13px; }
+  .track { position: relative; height: 14px; background: var(--track); border-radius: 7px; }
+  .bar { height: 100%; border-radius: 7px; }
+  .pass { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--muted); opacity: .6; }
+  .val { font-weight: 700; text-align: right; }
+  .ev { grid-column: 1 / -1; margin: -4px 0 6px; font-size: 12px; color: var(--muted); font-style: italic; }
+  .legend { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  ul.items { list-style: none; padding: 0; margin: 0; }
+  ul.items li { padding: 10px 0; border-top: 1px solid var(--line); }
+  ul.items li:first-child { border-top: 0; padding-top: 0; }
+  .q { display: block; font-size: 13px; color: var(--muted); font-style: italic; margin-top: 2px; }
+  .tl { display: flex; height: 26px; border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
+  .tl div { display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; white-space: nowrap; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 6px 4px; border-top: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 500; }
+  .tag { font-size: 11px; font-weight: 600; }
+  .plan li { display: grid; grid-template-columns: 28px 1fr; gap: 8px; }
+  .num { width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff;
+         font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .redo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .redo div { border: 1px solid var(--line); border-radius: 8px; padding: 10px; font-size: 13px; }
+  .take { border-left: 4px solid var(--accent); padding: 4px 0 4px 12px; font-size: 16px; }
+  svg text { fill: var(--muted); font-size: 11px; }
+  @media (max-width: 520px) { .row { grid-template-columns: 120px 1fr 28px; } .redo { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+// ===================== Claude: replace ONLY this DATA object =====================
+const DATA = {
+  "date": "2026-11-16",
+  "caseId": "case-01",
+  "caseTitle": "Rippling AI Usage Tracking, Provisioning and ROI",
+  "persona": "neutral",
+  "mode": "mock",
+  "hints": 1,
+  "curveball": "Usage data is uneven across vendors. Adapted v1 to show coverage honestly.",
+  "overall": 3.1,
+  "verdict": "Not yet",
+  "summary": "SAMPLE. Opened with clear assumptions and a game plan. Focused on IT program owners and chose 'value proofers' using a reach vs. underserved split. Prioritized ROI blindness. Proposed an AI scorecard with seat reclamation. Ran short on time and gave only a single activity metric with no guardrail.",
+  "dimensions": [
+    { "id": "D1", "name": "Clear communication",      "score": 4, "evidence": "Here's my plan: motivation, segment, problems, then a v1." },
+    { "id": "D2", "name": "Product motivation",       "score": 3, "evidence": "Leaders can't answer what they're getting for AI spend." },
+    { "id": "D3", "name": "Segmentation",             "score": 4, "evidence": "Value proofers are high reach and the most underserved." },
+    { "id": "D4", "name": "Problem identification",   "score": 3, "evidence": "Marcus can report activity but not value." },
+    { "id": "D5", "name": "Solution brainstorming",   "score": 3, "evidence": "A scorecard, auto-reclamation, and pilots." },
+    { "id": "D6", "name": "Solution selection & v1",  "score": 3, "evidence": "Scorecard first, reclamation as the quick win." },
+    { "id": "D7", "name": "Success metrics & risks",  "score": 2, "evidence": "We'd track weekly active users." }
+  ],
+  "timeline": [
+    { "stage": "Communication", "minutes": 3,  "target": [3, 5] },
+    { "stage": "Motivation",    "minutes": 5,  "target": [3, 5] },
+    { "stage": "Segmentation",  "minutes": 11, "target": [8, 10] },
+    { "stage": "Problems",      "minutes": 8,  "target": [8, 10] },
+    { "stage": "Solutions",     "minutes": 7,  "target": [8, 10] },
+    { "stage": "Metrics",       "minutes": 1,  "target": [3, 3] },
+    { "stage": "Closing",       "minutes": 0,  "target": [1, 1], "skipped": true }
+  ],
+  "strengths": [
+    { "title": "Crisp, case-specific opening", "evidence": "I'll track usage metadata, not prompt content." },
+    { "title": "Decisive segment prioritization", "evidence": "Value proofers are high reach and the most underserved." }
+  ],
+  "weaknesses": [
+    { "title": "Metrics were an afterthought: no north star tied to the problem, no guardrail", "evidence": "We'd track weekly active users." },
+    { "title": "No closing that ties back to the mission", "evidence": "Ended on the v1 scope." }
+  ],
+  "plan": [
+    { "dimension": "D7", "action": "Drill north star + guardrail pairs", "how": "Ten minutes a day: for three products, name one problem-linked metric and one guardrail.", "when": "Next 3 days" },
+    { "dimension": "D3", "action": "Cut segmentation to 8 minutes", "how": "Say the dimensions in one sentence, then go straight to the 2x2.", "when": "Next mock" },
+    { "dimension": "D1", "action": "Always close on the mission", "how": "Rehearse a 20-second summary: persona → problem → v1 → mission.", "when": "Every mock" }
+  ],
+  "redo": {
+    "segment": "D7 primary metric",
+    "before": "We'd track weekly active users.",
+    "after": "Verified-value AI spend: the share of spend on active seats tied to a measured outcome. Guardrail: employee comfort with tracking.",
+    "scoreBefore": 2, "scoreAfter": 3,
+    "change": "Metric now measures the problem; guardrail added. Still missing risks."
+  },
+  "history": [
+    { "date": "2026-11-16", "overall": 3.1 }
+  ],
+  "takeaway": "Protect 3 minutes for metrics: north star, one guardrail, then close on the mission."
+};
+// ================================================================================
+
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const colorFor = s => s >= 4 ? css('--good') : s >= 3 ? css('--mid') : css('--bad');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function dimensionBars(d) {
+  return d.map(x => `
+    <div class="row">
+      <div class="lbl"><b>${esc(x.id)}</b> ${esc(x.name)}</div>
+      <div class="track" role="img" aria-label="${esc(x.name)} ${x.score} of 5">
+        <div class="bar" style="width:${(x.score / 5) * 100}%;background:${colorFor(x.score)}"></div>
+        <div class="pass" style="left:60%"></div>
+      </div>
+      <div class="val" style="color:${colorFor(x.score)}">${x.score}</div>
+      ${x.evidence ? `<div class="ev">"${esc(x.evidence)}"</div>` : ''}
+    </div>`).join('');
+}
+
+function timeline(t) {
+  const total = t.reduce((a, s) => a + (s.minutes || 0), 0) || 1;
+  const palette = ['#3a5ba0', '#5b7fc4', '#2f7d5b', '#4a9d77', '#b07a12', '#c99a3e', '#7a6aa8'];
+  const bar = t.filter(s => s.minutes > 0).map((s, i) =>
+    `<div style="width:${(s.minutes / total) * 100}%;background:${palette[i % palette.length]}" title="${esc(s.stage)}: ~${s.minutes} min">${s.minutes >= 3 ? esc(s.stage) : ''}</div>`).join('');
+  const rows = t.map(s => {
+    const [lo, hi] = s.target || [0, 0];
+    let tag = `<span class="tag" style="color:${css('--good')}">on target</span>`;
+    if (s.skipped || !s.minutes) tag = `<span class="tag" style="color:${css('--bad')}">skipped</span>`;
+    else if (s.minutes > hi) tag = `<span class="tag" style="color:${css('--mid')}">over</span>`;
+    else if (s.minutes < lo) tag = `<span class="tag" style="color:${css('--mid')}">under</span>`;
+    return `<tr><td>${esc(s.stage)}</td><td>~${s.minutes || 0} min</td><td>${lo === hi ? lo : lo + '-' + hi} min</td><td>${tag}</td></tr>`;
+  }).join('');
+  return `<div class="tl">${bar}</div>
+    <table><tr><th>Stage</th><th>Actual (est.)</th><th>Target</th><th></th></tr>${rows}</table>
+    <div class="legend">Times are estimates from turn length, not a clock.</div>`;
+}
+
+function trend(h) {
+  if (!h || h.length < 2) return `<div class="meta">This is your first logged session. A trend line appears after your next one.</div>`;
+  const W = 560, H = 150, P = 28;
+  const x = i => P + i * ((W - 2 * P) / (h.length - 1));
+  const y = v => H - P - ((v - 1) / 4) * (H - 2 * P);
+  const pts = h.map((p, i) => `${x(i)},${y(p.overall)}`).join(' ');
+  const grid = [1, 2, 3, 4, 5].map(v => `<line x1="${P}" x2="${W - P}" y1="${y(v)}" y2="${y(v)}" stroke="${css('--line')}" ${v === 3 ? 'stroke-dasharray="4 3"' : ''}/><text x="4" y="${y(v) + 4}">${v}</text>`).join('');
+  const dots = h.map((p, i) => `<circle cx="${x(i)}" cy="${y(p.overall)}" r="4" fill="${colorFor(p.overall)}"><title>${esc(p.date)}: ${p.overall}</title></circle>`).join('');
+  const labels = h.map((p, i) => `<text x="${x(i)}" y="${H - 6}" text-anchor="middle">${esc(p.date.slice(5))}</text>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Overall score over sessions">${grid}
+    <polyline points="${pts}" fill="none" stroke="${css('--accent')}" stroke-width="2"/>${dots}${labels}</svg>
+    <div class="legend">Dashed line = pass level (3).</div>`;
+}
+
+function render(D) {
+  const pass = D.verdict === 'Pass';
+  const sorted = [...D.dimensions].sort((a, b) => b.score - a.score);
+  document.title = `Report · ${D.date} · ${D.caseId}`;
+  document.getElementById('app').innerHTML = `
+    <h1>Interview Report</h1>
+    <div class="meta">${esc(D.date)} · ${esc(D.caseId)}: ${esc(D.caseTitle)}</div>
+
+    <div class="card hero">
+      <div>
+        <h2>Overall rating</h2>
+        <div class="score" style="color:${colorFor(D.overall)}">${D.overall}<small> / 5</small></div>
+        <div style="margin-top:8px"><span class="pill" style="background:${pass ? css('--good') : css('--bad')}">${esc(D.verdict)}</span></div>
+        <div class="legend">Pass requires every dimension ≥ 3</div>
+      </div>
+      <div class="chips">
+        <span>Persona: ${esc(D.persona)}</span><span>Mode: ${esc(D.mode)}</span><span>Hints: ${D.hints}</span>
+        <span>Best: ${esc(sorted[0].id)} (${sorted[0].score})</span><span>Weakest: ${esc(sorted.at(-1).id)} (${sorted.at(-1).score})</span>
+        ${D.curveball ? `<div class="meta" style="margin-top:8px;max-width:360px">Curveball: ${esc(D.curveball)}</div>` : ''}
+      </div>
+    </div>
+
+    <div class="card"><h2>Work summary</h2><div>${esc(D.summary)}</div></div>
+
+    <div class="card"><h2>Scores by dimension</h2>${dimensionBars(D.dimensions)}
+      <div class="legend">Vertical line = pass (3). Green ≥ 4 · Amber 3 · Red ≤ 2</div></div>
+
+    <div class="grid">
+      <div class="card"><h2 style="color:${css('--good')}">Strengths</h2><ul class="items">
+        ${D.strengths.map(s => `<li>${esc(s.title)}<span class="q">"${esc(s.evidence)}"</span></li>`).join('')}</ul></div>
+      <div class="card"><h2 style="color:${css('--bad')}">Weaknesses</h2><ul class="items">
+        ${D.weaknesses.map(s => `<li>${esc(s.title)}<span class="q">"${esc(s.evidence)}"</span></li>`).join('')}</ul></div>
+    </div>
+
+    <div class="card"><h2>Improvement plan</h2><ul class="items plan">
+      ${D.plan.map((p, i) => `<li><span class="num">${i + 1}</span><div><b>${esc(p.action)}</b> <span class="meta">· ${esc(p.dimension)} · ${esc(p.when)}</span><span class="q" style="font-style:normal">${esc(p.how)}</span></div></li>`).join('')}
+    </ul></div>
+
+    <div class="card"><h2>Time per stage</h2>${timeline(D.timeline)}</div>
+
+    ${D.redo ? `<div class="card"><h2>Redo: ${esc(D.redo.segment)}</h2><div class="redo">
+      <div><b style="color:${colorFor(D.redo.scoreBefore)}">Attempt 1 · ${D.redo.scoreBefore}</b><br>"${esc(D.redo.before)}"</div>
+      <div><b style="color:${colorFor(D.redo.scoreAfter)}">Attempt 2 · ${D.redo.scoreAfter}</b><br>"${esc(D.redo.after)}"</div>
+    </div><div class="meta" style="margin-top:8px">${esc(D.redo.change)}</div></div>` : ''}
+
+    <div class="card"><h2>Trend</h2>${trend(D.history)}</div>
+
+    <div class="card"><h2>Carry into next session</h2><div class="take">${esc(D.takeaway)}</div></div>`;
+}
+render(DATA);
+</script>
+</body>
+</html>
